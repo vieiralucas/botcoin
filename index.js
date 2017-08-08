@@ -6,9 +6,7 @@ const rtm = new RtmClient(process.env.BOT_TOKEN)
 let channel
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the `rtm.start` payload
-rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, ({ channels }) => {
-  channel = channels.find(c => c.is_member && c.name === 'chatbot').id
-})
+rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, ({ channels }) => {})
 
 rtm.on(RTM_EVENTS.MESSAGE, message => {
   if (message.text.indexOf('bitcoin') > -1) {
@@ -19,7 +17,7 @@ rtm.on(RTM_EVENTS.MESSAGE, message => {
         const { symbol, buy, sell } = BRL
         rtm.sendMessage(
           `According to blockchain.info: buy: ${symbol}${buy}, sell: ${symbol}${sell}`,
-          channel
+          message.channel
         )
       })
       .catch(err => {
