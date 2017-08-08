@@ -10,7 +10,11 @@ let channel
 rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, ({ channels }) => {})
 
 rtm.on(RTM_EVENTS.MESSAGE, message => {
-  if (message.text.indexOf('bitcoin') > -1) {
+  if (
+    message.text &&
+    message.text.indexOf &&
+    message.text.indexOf('bitcoin') > -1
+  ) {
     axios
       .get('https://blockchain.info/pt/ticker')
       .then(({ data }) => data)
