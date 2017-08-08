@@ -25,6 +25,7 @@
   "homepage": "https://github.com/vieiralucas/botcoin#readme",
   "dependencies": {
     "@slack/client": "^3.10.0",
-    "axios": "^0.16.2"
+    "axios": "^0.16.2",
+    "express": "^4.15.4"
   }
 }

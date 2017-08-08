@@ -1,5 +1,6 @@
 const { RtmClient, CLIENT_EVENTS, RTM_EVENTS } = require('@slack/client')
 const axios = require('axios')
+const express = require('express')
 
 const rtm = new RtmClient(process.env.BOT_TOKEN)
 
@@ -30,3 +31,14 @@ rtm.on(RTM_EVENTS.MESSAGE, message => {
 rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, () => {})
 
 rtm.start()
+
+const server = express()
+
+server.get('/', (req, res) => {
+  res.sendStatus(204)
+})
+
+const PORT = process.env.PORT || 3000
+server.listen(PORT, () => {
+  console.log(`express server listening at ${PORT}`)
+})
