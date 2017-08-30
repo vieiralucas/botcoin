@@ -13,6 +13,15 @@ rtm.on(RTM_EVENTS.MESSAGE, message => {
   if (
     message.text &&
     message.text.indexOf &&
+    message.text.indexOf('joga+') > -1
+  ) {
+    rtm.sendMessage('MILHÕÕÕÕÕÕÕÕES', message.channel)
+    return
+  }
+
+  if (
+    message.text &&
+    message.text.indexOf &&
     message.text.indexOf('bitcoin') > -1
   ) {
     axios
