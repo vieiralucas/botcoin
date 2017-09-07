@@ -1,10 +1,31 @@
 const { RtmClient, CLIENT_EVENTS, RTM_EVENTS } = require('@slack/client')
 const axios = require('axios')
 const express = require('express')
+const cheerio = require('cheerio')
 
 const rtm = new RtmClient(process.env.BOT_TOKEN)
 
 let channel
+const fetchBtcPrice = () =>
+  axios
+    .get('http://dolarhoje.com/bitcoin-hoje/#bitcoin=1,00')
+    .then(({ data }) => data)
+    .then(cheerio.load.bind(cheerio))
+    .then($ => $('#conversao tbody tr'))
+    .then(trs =>
+      trs
+        .map(function() {
+          return cheerio(this)
+            .children()
+            .map(function() {
+              return cheerio(this).text()
+            })
+            .get()
+            .join(': ')
+        })
+        .get()
+        .join('\n')
+    )
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the `rtm.start` payload
 rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, ({ channels }) => {})
@@ -13,24 +34,15 @@ rtm.on(RTM_EVENTS.MESSAGE, message => {
   if (
     message.text &&
     message.text.indexOf &&
-    message.text.indexOf('joga+') > -1
-  ) {
-    rtm.sendMessage('MILHÕÕÕÕÕÕÕÕES', message.channel)
-    return
-  }
-
-  if (
-    message.text &&
-    message.text.indexOf &&
     message.text.indexOf('bitcoin') > -1
   ) {
-    axios
-      .get('https://blockchain.info/pt/ticker')
-      .then(({ data }) => data)
-      .then(({ BRL }) => {
-        const { symbol, buy, sell } = BRL
+    fetchBtcPrice()
+      .then(btc => {
         rtm.sendMessage(
-          `According to blockchain.info: buy: ${symbol}${buy}, sell: ${symbol}${sell}`,
+          [
+            'According to http://dolarhoje.com/bitcoin-hoje/#bitcoin=1,00',
+            btc,
+          ].join('\n\n'),
           message.channel
         )
       })
